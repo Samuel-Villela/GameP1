@@ -4,6 +4,7 @@
 #include<string.h>
 int main()
 {
+\\teste para samuel
     int i,a,Nrepetir=-1;
     char nome[21];
     char escolhaMenu[11];
