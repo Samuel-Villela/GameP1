@@ -5,7 +5,7 @@
 
 #include <windows.h> // biblioteca do sleep 
 
-void printf_com_delay(char*texto, int delay_ms);
+void printfDL(char*texto, int delay_ms);
 
 int main()
 {
@@ -16,18 +16,18 @@ int main()
     strcpy(escolhaMenu,"repetir");
 
 
-    printf("Escolha um nome:");
+    printf("Escolha um nome: ");
     scanf("%s",nome);
 
     while(strcmp(escolhaMenu,"repetir")==0)
 
     {
      // Menu do jogo.
-     printf("\n--- Menu do Jogo ---\n");
+     printfDL("\n -- Menu do Jogo --\n", 50);
      printf("Digite uma das opcoes:\n");
-     printf("- trocarNome\n");
-     printf("- inicio\n");
-     printf("- sair\n");
+     printfDL(" -- Trocar Nome \n",50);
+     printfDL(" -- inicio\n", 50);
+     printfDL(" -- sair\n", 50);
 
 
      // Vai ver oq o cara quer fazer no menu
@@ -35,7 +35,7 @@ int main()
 
      // Se o cara so quiser fazer acoes que nao saiam do menu tem que botar aqui e dps dar o valor de 'repetir' pro escolhaMenu.
      if(strcmp(escolhaMenu,"trocarnome")==0 || strcmp(escolhaMenu,"trocarNome")==0){
-        printf("Novo nome: ");
+        printf("\nNovo nome: ");
         scanf("%s",nome);
         strcpy(escolhaMenu,"repetir");
      }
@@ -55,19 +55,19 @@ int main()
         continue;
     }
     if(a==1){
-        printf("jogo 1");
+        printfDL("\n jogo 1 Escolhido\n",50);
     }
     if(a==2){
-        printf("jogo 2");
+        printfDL("jogo 2\n",50);
     }
     if(a==3){
-        printf("jogo 3");
+        printfDL("jogo 3\n",50);
     }
     if(a==4){
-        printf("jogo 4");
+        printfDL("jogo 4\n",50);
     }
     if(a==5){
-        printf("jogo 5");
+        printfDL("jogo 5\n",50);
     }
     Nrepetir=a;
     a=0;
@@ -77,9 +77,9 @@ int main()
     return 0;  
 }
 
-void printf_com_delay(char*texto, int delay_ms){
+void printfDL(char*texto, int delay_ms){
     while(*texto){
-        printf("%c",texto); //printar o texto na tela
+        printf("%c",*texto); //printar o primeiro caracter do texto na tela
         fflush(stdout); //força o printf amandar na tela cada letra
         Sleep(delay_ms); // recebe o delay em milisegundo
         texto++; // pula para o proximo ponteiro
