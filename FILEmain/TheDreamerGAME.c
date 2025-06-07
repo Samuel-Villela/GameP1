@@ -6,6 +6,7 @@
 #include <windows.h> // biblioteca do sleep 
 
 void printfDL(char*texto, int delay_ms);
+void Limpar_tela(); // não precisa de parametro, só estou chamando pra exucutar tal função
 
 int main()
 {
@@ -84,4 +85,12 @@ void printfDL(char*texto, int delay_ms){
         Sleep(delay_ms); // recebe o delay em milisegundo
         texto++; // pula para o proximo ponteiro
     } 
+}
+
+void Limpar_tela(){
+    #ifdef _WIN32;
+        system("cls"); // para windons
+    #else
+        system("clear"); // pra linux
+    #endif;
 }
