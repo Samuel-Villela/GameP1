@@ -2,9 +2,13 @@
 #include<time.h>
 #include<stdlib.h>
 #include<string.h>
+
+#include <windows.h> // biblioteca do sleep 
+
+void printf_com_delay(char*texto, int delay_ms);
+
 int main()
 {
-\\teste para guilherme
     int i,a,Nrepetir=-1;
     char nome[21];
     char escolhaMenu[11];
@@ -71,4 +75,13 @@ int main()
     }
     
     return 0;  
+}
+
+void printf_com_delay(char*texto, int delay_ms){
+    while(*texto){
+        printf("%c",texto); //printar o texto na tela
+        fflush(stdout); //força o printf amandar na tela cada letra
+        Sleep(delay_ms); // recebe o delay em milisegundo
+        texto++; // pula para o proximo ponteiro
+    } 
 }
