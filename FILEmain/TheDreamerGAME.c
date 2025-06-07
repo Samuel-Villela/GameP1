@@ -22,7 +22,7 @@ int main()
 
     printf("Escolha um nome:  ");
     fgets(nome,21,stdin); // alterei para que possa ser utilizado nome composto tambem
-
+    nome[strcspn(nome, "\n")] = 0; // Remove o '\n' da string composta, ajuda a evitar erros ao usar o \n depois
 
     while(strcmp(escolhaMenu,"repetir")==0)
 
@@ -86,16 +86,29 @@ int main()
 }
 
 void Minigame_Penaltis(char*nome){
-    int chute_Player, ladoGoleiro=0, i=0, gols_feitos =0;
+    int ladoGoleiro=0, i=0, gols_feitos =0, gols_desperdiçados =0;
     char Pulo_Goleiro;
 
-    printf("\n---- HORA DOS PENALTIS!!!");
+    printf("\n---- HORA DOS PENALTIS ----\n");
 
     for(i=0; i<5; i++){
-        printf("\n Escolha um lado para chutar no gol:  \n");
-        printf("lado Esquerdo [E], Lado Direito [D], Meio do Gol [M]:   ");
-        scanf(" %c",&chute_Player);
-        chute_Player = toupper(chute_Player);  // converte pra todo letra minuscula para maiúscula
+        printf("  ----------------------------------------------------- \n"
+               " |O Placar esta %d gols feitos e %d gols desperdiçados |\n"
+               "  -----------------------------------------------------\n",gols_feitos,gols_desperdiçados);
+        printf("                    ____   \n"
+       " o__        o__     |   |\\  \n"
+       "/|          /\\      |   |X\\ \n" 
+       "/ > o        <\\     |   |XX\\\n");
+
+        int chute_Player = '\0';
+        while (chute_Player!= 'E'&& chute_Player !='D' && chute_Player!= 'M') {
+            printf("\n Escolha um lado para chutar no gol:  \n");
+            printf("lado Esquerdo [E], Lado Direito [D], Meio do Gol [M]:   ");
+            scanf(" %c",&chute_Player);
+            chute_Player = toupper(chute_Player);
+        }
+        
+        
 
         ladoGoleiro = rand() % 3;
         if (ladoGoleiro ==0){
@@ -109,25 +122,19 @@ void Minigame_Penaltis(char*nome){
         }
 
         if (Pulo_Goleiro == chute_Player){
-            int dado_player = 1 + rand()%20;
-            int dado_Goleiro = rand()%20 + 1 + 10;
-            if(dado_Goleiro>dado_player){
-                printf("\nO GOLEIRO AGARROU SEU CHUTE!!!\n");   
-            }
-            else{
-                printf (" \n Ambos escolheram o mesmo lado, MAS O CHUTE FOI FORTE DEMAIS!!! GOLAÇO!!!\n");
-                gols_feitos = gols_feitos +1;
-            }
+            printf("\nO GOLEIRO AGARROU SEU CHUTE!!!\n");   
+            gols_desperdiçados = gols_desperdiçados +1;
         }
         else{
             printf ("\nQUE GOLAÇOOO!!!! %s Converte o Penalti\n",nome);
             gols_feitos = gols_feitos +1;
         }
+        system("cls"); // limpa o terminal para a proxima interação
         
 
     }
     if( gols_feitos >= 3){
-     printf("%s converteu a maior parte de seus penaltis, está permitido ir para o proximo Desafio\n",nome);
+     printf("\n%s converteu a maior parte de seus penaltis, está permitido ir para o proximo Desafio\n",nome);
     }   
     else{
         printf ("\n %s não converteu a maior parte de seus penaltis, FALHOU NO DESAFIO DOS PENALTIS\n",nome);
