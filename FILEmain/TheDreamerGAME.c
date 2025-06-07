@@ -16,12 +16,12 @@ int main()
     int i,a,Nrepetir=-1;
     char *nome;
     char escolhaMenu[11];
-    nome=(char*) malloc(21*sizeof(char));// alterei para alocaçã odinamica do nome, serve para quando usarmos funções não perder dados
+    nome=(char*) malloc(21*sizeof(char));// alterei para alocação odinamica do nome, serve para quando usarmos funções não perder dados
     strcpy(escolhaMenu,"repetir"); 
 
 
     printf("Escolha um nome:  ");
-    scanf("%s",nome);
+    fgets(nome,21,stdin); // alterei para que possa ser utilizado nome composto tambem
 
 
     while(strcmp(escolhaMenu,"repetir")==0)
@@ -64,6 +64,7 @@ int main()
     }
     if(a==2){
         printf("jogo 2");
+         Minigame_Penaltis(nome);
     }
     if(a==3){
         printf("jogo 3");
@@ -109,16 +110,17 @@ void Minigame_Penaltis(char*nome){
 
         if (Pulo_Goleiro == chute_Player){
             int dado_player = 1 + rand()%20;
-            int dado_Goleiro = 1+ rand()%20;
+            int dado_Goleiro = rand()%20 + 1 + 10;
             if(dado_Goleiro>dado_player){
                 printf("\nO GOLEIRO AGARROU SEU CHUTE!!!\n");   
             }
             else{
-                printf (" \nAmbos escolheram o mesmo lado, MAS O CHUTE FOI FORTE DEMAIS!!! GOLAÇO!!!\n");
+                printf (" \n Ambos escolheram o mesmo lado, MAS O CHUTE FOI FORTE DEMAIS!!! GOLAÇO!!!\n");
+                gols_feitos = gols_feitos +1;
             }
         }
         else{
-            printf ("QUE GOLAÇOOO!!!! %s Converte o Penalti\n",nome);
+            printf ("\nQUE GOLAÇOOO!!!! %s Converte o Penalti\n",nome);
             gols_feitos = gols_feitos +1;
         }
         
@@ -128,7 +130,7 @@ void Minigame_Penaltis(char*nome){
      printf("%s converteu a maior parte de seus penaltis, está permitido ir para o proximo Desafio\n",nome);
     }   
     else{
-        printf ("%s não converteu a maior parte de seus penaltis, FALHOU NO DESAFIO DOS PENALTIS\n",nome);
+        printf ("\n %s não converteu a maior parte de seus penaltis, FALHOU NO DESAFIO DOS PENALTIS\n",nome);
     }
 
 
