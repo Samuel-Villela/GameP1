@@ -4,12 +4,8 @@
 #include<string.h>
 #include <ctype.h> // isso daqui serve para a gente trocar de maiusculo para minusculo rápido
 
-void Minigame_Penaltis(char*nome);
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-
 void Minigame_Penaltis(char *nome);
+
 
 int main()
 {
@@ -80,9 +76,9 @@ int main()
     a=0;
     }
     }
-    
+    free(nome);    
     return 0; 
-    free(nome);
+
 }
 
 void Minigame_Penaltis(char*nome){
@@ -92,6 +88,7 @@ void Minigame_Penaltis(char*nome){
     printf("\n---- HORA DOS PENALTIS ----\n");
 
     for(i=0; i<5; i++){
+
         printf("  ----------------------------------------------------- \n"
                " |O Placar esta %d gols feitos e %d gols desperdiçados |\n"
                "  -----------------------------------------------------\n",gols_feitos,gols_desperdiçados);
@@ -129,7 +126,7 @@ void Minigame_Penaltis(char*nome){
             printf ("\nQUE GOLAÇOOO!!!! %s Converte o Penalti\n",nome);
             gols_feitos = gols_feitos +1;
         }
-        system("cls"); // limpa o terminal para a proxima interação
+
         
 
     }
