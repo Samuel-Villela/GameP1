@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 #include<stdio.h>
 #include<time.h>
 #include<stdlib.h>
@@ -18,7 +18,9 @@ typedef struct MOB_
 int main()
 {
     PERSONAGEM p;
-    MOB m[10]; // cria uma array preenchda de mobs
+
+    MOB m[10];
+
     char acao_personagem;
     int fugir=0;  
     int i,z; //z e o aleatorio
