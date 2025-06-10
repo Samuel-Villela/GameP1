@@ -5,8 +5,6 @@
 #include <ctype.h> // isso daqui serve para a gente trocar de maiusculo para minusculo rápido
 
 void Minigame_Penaltis(char *nome);
-
-
 int main()
 {
     int i,a,Nrepetir=-1;
@@ -134,7 +132,7 @@ void Minigame_Penaltis(char*nome){
      printf("\n%s converteu a maior parte de seus penaltis, está permitido ir para o proximo Desafio\n",nome);
     }   
     else{
-        printf ("\n %s não converteu a maior parte de seus penaltis, FALHOU NO DESAFIO DOS PENALTIS\n",nome);
+        printf ("\n %s não converteu a maior parte de seus penaltis e FALHOU NO DESAFIO DOS PENALTIS\n",nome);
     }
 
 
