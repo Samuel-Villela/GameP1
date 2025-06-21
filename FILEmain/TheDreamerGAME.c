@@ -22,6 +22,7 @@ void Minigame_Penaltis(char *nome, int *escolhaMenu, JOGADOR *p);
 void Minigame_ShowDoMilhao(char *nome, int *escolhaMenu, JOGADOR *p);
 void Minigame_BattleGame(char *nome, int *escolhaMenu, JOGADOR *p);
 
+
 void printfDL(char *texto, int delay_ms);
 char lerOpcaoOuEsc(int *escolhaMenu, const char *opcoesValidas); //Funcao de ler opcoes ou esc, usada nos minigames para retornar ao menu
 void mostrarMenu(char *nome, int *escolhaMenu, JOGADOR p);
@@ -41,11 +42,12 @@ int main() {
 
     strncpy(p.nome, nome, 20); //Passando o nome para o struct
     p.nome[20] = '\0';  // Garante terminação
-
+    p.ultimoMinigame =0;
     mostrarMenu(nome, &escolhaMenu, p);
 
     if (escolhaMenu == 1) { //Inicio do jogo(so inicia caso o jogador selecione "Iniciar")
         srand(time(NULL));
+        int  count = p.ultimoMinigame; // aqui o contador vai sempre salvar onde o jgdr está
 
         while (count < 3) {
             int repetido = 0;
@@ -65,12 +67,15 @@ int main() {
             if (sorteio == 1) {
                 printfDL("\nJogo 1 escolhido: Penaltis\n", 50);
                 Minigame_Penaltis(nome, &escolhaMenu, &p);
+                p.ultimoMinigame = count; // faz com que cada minigame tenha um numero que representa qual game o jgdr está.
             } else if (sorteio == 2) {
                 printfDL("\nJogo 2 escolhido: Show do Milhao\n", 50);
                 Minigame_ShowDoMilhao(nome, &escolhaMenu, &p);
+                p.ultimoMinigame = count;
             } else if (sorteio == 3) {
                 printfDL("\nJogo 3 escolhido: Matematica Discreta\n", 50);
                 Minigame_BattleGame(nome, &escolhaMenu, &p);
+                p.ultimoMinigame = count;
             } else if (sorteio == 4) {
                 printfDL("\nJogo 4 escolhido:\n", 50);
             } else if (sorteio == 5) {
@@ -154,6 +159,7 @@ void mostrarMenu(char *nome, int *escolhaMenu, JOGADOR p) {
             printf("\n\n\n\n");
             *escolhaMenu = 0;
         }
+        
     }
 }
 
@@ -384,7 +390,7 @@ void Minigame_ShowDoMilhao(char *nome, int *escolhaMenu, JOGADOR *p) {
     for (j = 0; j < 10; j++) {
         do {
             i = rand() % 18;
-        } while (usadas[i]);
+        } while (usadas[i]==1);
 
         usadas[i] = 1;
 
@@ -433,7 +439,7 @@ void Minigame_BattleGame(char *nome, int *escolhaMenu, JOGADOR *p)
     srand(time(NULL));
 
     printf("Apresentacao do minigame\n");
-
+    
     //Informacoes sobre personagem e MOB antes da batalha. Precisa ser definido para cada MOB
     i=1;
     p->vida=10; p->ataque=2; p->defesa=2; //Por enquanto os status do personagem sao definidos manualmente, dps trocar pra aleatorio
@@ -452,7 +458,8 @@ void Minigame_BattleGame(char *nome, int *escolhaMenu, JOGADOR *p)
 
         acao_personagem = lerOpcaoOuEsc(escolhaMenu, "ADF");
        
-        if(escolhaMenu == 0){
+        if(acao_personagem == 0){
+            printf("[ESC detectado] Voltando ao menu...\n");
             mostrarMenu(nome, escolhaMenu, *p);
             return;
         } //Parte do personagem
@@ -505,3 +512,4 @@ void Minigame_BattleGame(char *nome, int *escolhaMenu, JOGADOR *p)
     }
     printf("Continuacao da historia");
 }
+
