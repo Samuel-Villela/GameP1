@@ -9,6 +9,7 @@
 
 #define MAX_SLOTS 5
 #define TOP 5
+#define TAM 3
 
 typedef struct JOGADOR_ {
     char nome[21];
@@ -24,14 +25,20 @@ void Minigame_Penaltis(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR *p)
 void Minigame_ShowDoMilhao(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR *p);
 void Minigame_BattleGame(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR *p);
 
+void imprimirTabuleiro(char tabuleiro[TAM][TAM]);
+void fazerJogada(char tabuleiro[TAM][TAM], int linha, int coluna, char jogador);
+void jogarContraComputador(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR *p);
+void jogarContraOutroJogador(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR *p);
+
 
 void printfDL(char *texto, int delay_ms);
 char lerOpcaoOuEsc(int *escolhaMenu, const char *opcoesValidas); //Funcao de ler opcoes ou esc, usada nos minigames para retornar ao menu
 void mostrarMenu(char *nome, int *escolhaMenu, JOGADOR p);
-void limparTerminal();
 void salvarJogo(JOGADOR *p);
 void carregarJogo(JOGADOR *p);
+void atributos(JOGADOR *p);
 void mostrarRanking();
+void limparTerminal();
 
 
 int main() {
@@ -49,7 +56,8 @@ int main() {
 
     strncpy(p.nome, nome, 20); //Passando o nome para o struct
     p.nome[20] = '\0';  // Garante terminação
-    p.ultimoMinigame =0;
+    p.ultimoMinigame = 0;
+    atributos(&p); // Atributos Iniciais
     mostrarMenu(nome, &escolhaMenu, p);
 
     if (escolhaMenu == 1) { //Inicio do jogo(so inicia caso o jogador selecione "Iniciar")
@@ -88,8 +96,24 @@ int main() {
                 p.ultimoMinigame = count;
             } else if (sorteio == 4) {
                 limparTerminal();
-                printfDL("\nJogo 4 escolhido:\n", 50);
-            } else if (sorteio == 5) {
+                printfDL("\nJogo 4 escolhido: Jogo da velha\n", 50);
+                int opcao;
+
+                printf("\nEscolha uma opcao:\n");
+                printf("1. Jogar contra o computador\n");
+                printf("2. Jogar contra outro jogador\n");
+                scanf("%d", &opcao);
+
+                if (opcao == 1) {
+                    jogarContraComputador(nome, &escolhaMenu, &pontuacao, &p);
+                } else if (opcao == 2) {
+                    jogarContraOutroJogador(nome, &escolhaMenu, &pontuacao, &p);
+                } else {
+                    printf("Opção inválida!\n");
+                    return 1;
+                }
+            } 
+            else if (sorteio == 5) {
                 limparTerminal();
                 printfDL("\nJogo 5 escolhido:\n", 50);
             }
@@ -146,7 +170,7 @@ void mostrarMenu(char *nome, int *escolhaMenu, JOGADOR p) {
 
             if(*escolhaMenu == 1){
                 // salvar jogo
-                salvarJogo(&p);  //FALTA definir o struct como variavel e chamar p[h]
+                salvarJogo(&p);
             }
             else{
                 limparTerminal();
@@ -162,7 +186,7 @@ void mostrarMenu(char *nome, int *escolhaMenu, JOGADOR p) {
 
             if(*escolhaMenu == 1){
                 // carregar jogo
-                carregarJogo(&p);  //FALTA definir o struct como variavel e chamar p[h]
+                carregarJogo(&p);
                 printfDL("Carregamento concluido!",50);
             }
             else{
@@ -209,6 +233,21 @@ void limparTerminal() {
     #else
         system("clear"); // comando do Linux/macOS
     #endif
+}
+
+void atributos(JOGADOR *p)
+{
+    int atributosIniciais;  // define valores de atributos iniciais e aloca no struct
+    srand(time(NULL));
+
+    atributosIniciais = 2 + rand() % 2;
+    p->ataque = atributosIniciais;
+
+    atributosIniciais = 2 + rand() % 2;
+    p->defesa = atributosIniciais;
+
+    atributosIniciais = 8 + rand() % 3;
+    p->vida = atributosIniciais;
 }
 
 void salvarJogo(JOGADOR *p)
@@ -347,6 +386,15 @@ void mostrarRanking() {
     printf("=============================\n\n");
 
 
+}
+
+void printfDL(char *texto, int delay_ms) {
+    while (*texto) {
+        printf("%c", *texto);
+        fflush(stdout);
+        Sleep(delay_ms);
+        texto++;
+    }
 }
 
 void Minigame_Penaltis(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR *p) {
@@ -490,14 +538,174 @@ void Minigame_ShowDoMilhao(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR
     printf("\n%s sua pontuacao foi %d\n", nome, pontuacaoTemporaria);
 }
 
-void printfDL(char *texto, int delay_ms) {
-    while (*texto) {
-        printf("%c", *texto);
-        fflush(stdout);
-        Sleep(delay_ms);
-        texto++;
+void imprimirTabuleiro(char tabuleiro[TAM][TAM]) {
+    printf("\nTabuleiro:\n");
+    for (int i = 0; i < TAM; i++) {
+        for (int j = 0; j < TAM; j++) {
+            printf(" %c ", tabuleiro[i][j]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+
+int jogadaValida(char tabuleiro[TAM][TAM], int linha, int coluna) {
+    return (linha >= 0 && linha < TAM && coluna >= 0 && coluna < TAM && tabuleiro[linha][coluna] == '-');
+}
+
+void fazerJogada(char tabuleiro[TAM][TAM], int linha, int coluna, char jogador) {
+    tabuleiro[linha][coluna] = jogador;
+}
+
+char verificarVencedor(char tabuleiro[TAM][TAM]) {
+    for (int i = 0; i < TAM; i++) {
+        if (tabuleiro[i][0] == tabuleiro[i][1] && tabuleiro[i][1] == tabuleiro[i][2] && tabuleiro[i][0] != '-') {
+            return tabuleiro[i][0];
+        }
+        if (tabuleiro[0][i] == tabuleiro[1][i] && tabuleiro[1][i] == tabuleiro[2][i] && tabuleiro[0][i] != '-') {
+            return tabuleiro[0][i];
+        }
+    }
+    if (tabuleiro[0][0] == tabuleiro[1][1] && tabuleiro[1][1] == tabuleiro[2][2] && tabuleiro[0][0] != '-') {
+        return tabuleiro[0][0];
+    }
+    if (tabuleiro[0][2] == tabuleiro[1][1] && tabuleiro[1][1] == tabuleiro[2][0] && tabuleiro[0][2] != '-') {
+        return tabuleiro[0][2];
+    }
+    return '-';
+}
+
+int tabuleiroCheio(char tabuleiro[TAM][TAM]) {
+    for (int i = 0; i < TAM; i++) {
+        for (int j = 0; j < TAM; j++) {
+            if (tabuleiro[i][j] == '-') {
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
+void jogarContraComputador(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR *p) {
+    char tabuleiro[TAM][TAM];
+    for (int i = 0; i < TAM; i++) {
+        for (int j = 0; j < TAM; j++) {
+            tabuleiro[i][j] = '-';
+        }
+    }
+
+    srand(time(NULL));
+
+    while (1) {
+        imprimirTabuleiro(tabuleiro);
+        int linha, coluna;
+        
+        printf("Pressione qualquer letra para jogar ou ESC para sair: ");
+        int r = lerOpcaoOuEsc(escolhaMenu, "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+
+        if (r == 0) {
+            printf("[ESC detectado] Voltando ao menu...\n");
+            mostrarMenu(nome, escolhaMenu, *p);
+            return;
+        
+        }
+        printf("\n");
+
+        printf("Jogador, digite linha e coluna (0 a 2): ");    
+        scanf("%d %d", &linha, &coluna);
+        if (!jogadaValida(tabuleiro, linha, coluna)) {
+            printf("Jogada inválida! Tente novamente.\n\n");
+            continue;
+        }
+        fazerJogada(tabuleiro, linha, coluna, 'X');
+
+        char vencedor = verificarVencedor(tabuleiro);
+        if (vencedor != '-') {
+            imprimirTabuleiro(tabuleiro);
+            printf("Jogador venceu!\n");
+            *pontuacao = *pontuacao+10;
+            break;
+        }
+
+        if (tabuleiroCheio(tabuleiro)) {
+            imprimirTabuleiro(tabuleiro);
+            printf("Empate!\n");
+            break;
+        }
+
+        printf("Vez do computador:\n");
+        do {
+            linha = rand() % TAM;
+            coluna = rand() % TAM;
+        } while (!jogadaValida(tabuleiro, linha, coluna));
+        fazerJogada(tabuleiro, linha, coluna, 'O');
+
+        vencedor = verificarVencedor(tabuleiro);
+        if (vencedor != '-') {
+            imprimirTabuleiro(tabuleiro);
+            printf("Computador venceu!\n");
+            break;
+        }
+
+        if (tabuleiroCheio(tabuleiro)) {
+            imprimirTabuleiro(tabuleiro);
+            printf("Empate!\n");
+            break;
+        }
     }
 }
+
+void jogarContraOutroJogador(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR *p) {
+    char tabuleiro[TAM][TAM];
+    for (int i = 0; i < TAM; i++) {
+        for (int j = 0; j < TAM; j++) {
+            tabuleiro[i][j] = '-';
+        }
+    }
+
+    char jogadorAtual = 'X';
+
+    while (1) {
+        imprimirTabuleiro(tabuleiro);
+        int linha, coluna;
+
+        printf("Pressione qualquer letra para jogar ou ESC para sair: ");
+        int r = lerOpcaoOuEsc(escolhaMenu, "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+
+        if (r == 0) {
+            printf("[ESC detectado] Voltando ao menu...\n");
+            mostrarMenu(nome, escolhaMenu, *p);
+            return;
+        
+        }
+        printf("\n");
+
+        printf("Jogador %c, digite linha e coluna (0 a 2): ", jogadorAtual);
+        scanf("%d %d", &linha, &coluna);
+        if (!jogadaValida(tabuleiro, linha, coluna)) {
+            printf("Jogada inválida! Tente novamente.\n\n");
+            continue;
+        }
+        fazerJogada(tabuleiro, linha, coluna, jogadorAtual);
+
+        char vencedor = verificarVencedor(tabuleiro);
+        if (vencedor != '-') {
+            imprimirTabuleiro(tabuleiro);
+            printf("Jogador %c venceu!\n", vencedor);
+            *pontuacao = *pontuacao+10;
+            break;
+        }
+
+        if (tabuleiroCheio(tabuleiro)) {
+            imprimirTabuleiro(tabuleiro);
+            printf("Empate!\n");
+            break;
+        }
+
+        jogadorAtual = (jogadorAtual == 'X') ? 'O' : 'X';
+    }
+}
+
 void Minigame_BattleGame(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR *p)
 {
     typedef struct MOB_
@@ -519,7 +727,6 @@ void Minigame_BattleGame(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR *
     
     //Informacoes sobre personagem e MOB antes da batalha. Precisa ser definido para cada MOB
     i=1;
-    p->vida=10; p->ataque=2; p->defesa=2; //Por enquanto os status do personagem sao definidos manualmente, dps trocar pra aleatorio
     m[i].vida=5+quant_batalhas; m[i].ataque=2+quant_batalhas; m[i].defesa=2+quant_batalhas;
 
     while(p->vida>=0 && m[i].vida>=0 && fugir==0)  //Batalha entre personagem e mob
