@@ -5,8 +5,10 @@
 #include <time.h>
 #include <windows.h>
 #include <conio.h>
+#include <unistd.h>
 
 #define MAX_SLOTS 5
+#define TOP 5
 
 typedef struct JOGADOR_ {
     char nome[21];
@@ -18,23 +20,28 @@ typedef struct JOGADOR_ {
     int defesa;
 } JOGADOR;
 
-void Minigame_Penaltis(char *nome, int *escolhaMenu, JOGADOR *p);
-void Minigame_ShowDoMilhao(char *nome, int *escolhaMenu, JOGADOR *p);
-void Minigame_BattleGame(char *nome, int *escolhaMenu, JOGADOR *p);
+void Minigame_Penaltis(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR *p);
+void Minigame_ShowDoMilhao(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR *p);
+void Minigame_BattleGame(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR *p);
 
 
 void printfDL(char *texto, int delay_ms);
 char lerOpcaoOuEsc(int *escolhaMenu, const char *opcoesValidas); //Funcao de ler opcoes ou esc, usada nos minigames para retornar ao menu
 void mostrarMenu(char *nome, int *escolhaMenu, JOGADOR p);
+void limparTerminal();
 void salvarJogo(JOGADOR *p);
 void carregarJogo(JOGADOR *p);
+void mostrarRanking();
 
 
 int main() {
     int i, sorteados[3], count = 0, sorteio;
     char *nome = (char *)malloc(21 * sizeof(char));
     int escolhaMenu;
+    int pontuacao = 0;
     JOGADOR p;
+
+    limparTerminal();
 
     printf("Escolha um nome:  ");
     fgets(nome, 21, stdin);
@@ -47,7 +54,7 @@ int main() {
 
     if (escolhaMenu == 1) { //Inicio do jogo(so inicia caso o jogador selecione "Iniciar")
         srand(time(NULL));
-        int  count = p.ultimoMinigame; // aqui o contador vai sempre salvar onde o jgdr está
+        count = p.ultimoMinigame; // aqui o contador vai sempre salvar onde o jgdr está
 
         while (count < 3) {
             int repetido = 0;
@@ -65,20 +72,25 @@ int main() {
             sorteados[count++] = sorteio;
 
             if (sorteio == 1) {
+                limparTerminal();
                 printfDL("\nJogo 1 escolhido: Penaltis\n", 50);
-                Minigame_Penaltis(nome, &escolhaMenu, &p);
+                Minigame_Penaltis(nome, &escolhaMenu, &pontuacao, &p);
                 p.ultimoMinigame = count; // faz com que cada minigame tenha um numero que representa qual game o jgdr está.
             } else if (sorteio == 2) {
+                limparTerminal();
                 printfDL("\nJogo 2 escolhido: Show do Milhao\n", 50);
-                Minigame_ShowDoMilhao(nome, &escolhaMenu, &p);
+                Minigame_ShowDoMilhao(nome, &escolhaMenu, &pontuacao, &p);
                 p.ultimoMinigame = count;
             } else if (sorteio == 3) {
+                limparTerminal();
                 printfDL("\nJogo 3 escolhido: Matematica Discreta\n", 50);
-                Minigame_BattleGame(nome, &escolhaMenu, &p);
+                Minigame_BattleGame(nome, &escolhaMenu, &pontuacao, &p);
                 p.ultimoMinigame = count;
             } else if (sorteio == 4) {
+                limparTerminal();
                 printfDL("\nJogo 4 escolhido:\n", 50);
             } else if (sorteio == 5) {
+                limparTerminal();
                 printfDL("\nJogo 5 escolhido:\n", 50);
             }
         }
@@ -89,6 +101,9 @@ int main() {
 
 void mostrarMenu(char *nome, int *escolhaMenu, JOGADOR p) {
     *escolhaMenu = 0;
+    printf("\nO terminal sera limpo em 3 segundos...\n");
+    sleep(3);
+    limparTerminal();
 
     while (*escolhaMenu == 0) 
     {
@@ -123,6 +138,7 @@ void mostrarMenu(char *nome, int *escolhaMenu, JOGADOR p) {
             *escolhaMenu=0;
         }
         if (*escolhaMenu == 2) {
+            limparTerminal();
             printfDL("Deseja salvar o jogo\n",50);
             printf(" 1) Sim\n");
             printf(" 2) Voltar\n");
@@ -133,11 +149,12 @@ void mostrarMenu(char *nome, int *escolhaMenu, JOGADOR p) {
                 salvarJogo(&p);  //FALTA definir o struct como variavel e chamar p[h]
             }
             else{
-                printf("\n\n\n\n");
+                limparTerminal();
             }
             *escolhaMenu = 0;
         }
         if (*escolhaMenu == 3){
+            limparTerminal();
             printfDL("Deseja carregar o jogo\n",50);
             printf(" 1) Sim\n");
             printf(" 2) Voltar\n");
@@ -149,14 +166,19 @@ void mostrarMenu(char *nome, int *escolhaMenu, JOGADOR p) {
                 printfDL("Carregamento concluido!",50);
             }
             else{
-                printf("\n\n\n\n");
+                limparTerminal();
             }
          *escolhaMenu = 0;
+        }
+        if (*escolhaMenu == 4){
+            limparTerminal();
+            mostrarRanking();
+            sleep(5);
+            *escolhaMenu = 0;
         }
         if (*escolhaMenu == 5) {  // trocar nome
             printf("Novo nome: ");
             scanf(" %20s", nome);
-            printf("\n\n\n\n");
             *escolhaMenu = 0;
         }
         
@@ -179,6 +201,14 @@ char lerOpcaoOuEsc(int *escolhaMenu, const char *opcoesValidas) {
             return tecla;
         }
     }
+}
+
+void limparTerminal() {
+    #ifdef _WIN32
+        system("cls"); // comando do Windows
+    #else
+        system("clear"); // comando do Linux/macOS
+    #endif
 }
 
 void salvarJogo(JOGADOR *p)
@@ -206,6 +236,7 @@ void salvarJogo(JOGADOR *p)
         printf(" 2) Substituir um save existente\n");
         printf("Escolha uma opcao: ");
         scanf("%d", &decisaoSave);
+        limparTerminal();
 
         if (decisaoSave != 1 && decisaoSave != 2) {
             printf("Opcao invalida. Jogo NAO foi salvo.\n");
@@ -244,6 +275,7 @@ void salvarJogo(JOGADOR *p)
 
 void carregarJogo(JOGADOR *p)
 {
+    limparTerminal();
     int slot;
     printf("\nEscolha o slot para carregar (1-%d):\n", MAX_SLOTS);
     for (int i = 1; i <= MAX_SLOTS; i++) {
@@ -272,9 +304,52 @@ void carregarJogo(JOGADOR *p)
     else {
         printf("\nSlot %d vazio ou erro ao carregar.\n", slot);
     }
+    printf("\n");
 }
 
-void Minigame_Penaltis(char *nome, int *escolhaMenu, JOGADOR *p) {
+void mostrarRanking() {
+    JOGADOR jogadores[MAX_SLOTS];
+    int count = 0;
+    char filename[30];
+
+    // Lê os arquivos de save existentes
+    for (int i = 1; i <= MAX_SLOTS; i++) {
+        sprintf(filename, "saveTheDreamer_%d.dat", i);
+        FILE *f = fopen(filename, "rb");
+        if (f) {
+            fread(&jogadores[count], sizeof(JOGADOR), 1, f);
+            fclose(f);
+            count++;
+        }
+    }
+
+    if (count == 0) {
+        printf("\nNenhum jogo salvo encontrado para exibir o ranking.\n");
+        return;
+    }
+
+    // Ordenação Bubble Sort (pontuação decrescente)
+    for (int i = 0; i < count - 1; i++) {
+        for (int j = 0; j < count - 1 - i; j++) {
+            if (jogadores[j].pontuacao < jogadores[j + 1].pontuacao) {
+                JOGADOR temp = jogadores[j];
+                jogadores[j] = jogadores[j + 1];
+                jogadores[j + 1] = temp;
+            }
+        }
+    }
+    // Exibe o ranking
+    printf("\n==== RANKING THE DREAMER ====\n");
+    int limite = count < TOP ? count : TOP;
+    for (int i = 0; i < limite; i++) {
+        printf("%dº lugar: %s - Pontuacao: %d\n", i + 1, jogadores[i].nome, jogadores[i].pontuacao);
+    }
+    printf("=============================\n\n");
+
+
+}
+
+void Minigame_Penaltis(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR *p) {
     int ladoGoleiro = 0, i = 0, gols_feitos = 0, gols_desperdicados = 0;
     char Pulo_Goleiro;
 
@@ -313,6 +388,7 @@ void Minigame_Penaltis(char *nome, int *escolhaMenu, JOGADOR *p) {
             gols_desperdicados++;
         } else {
             printf("\nQUE GOLACOOO!!!! %s Converte o Penalti\n", nome);
+            *pontuacao = *pontuacao+10;
             gols_feitos++;
         }
     }
@@ -324,8 +400,8 @@ void Minigame_Penaltis(char *nome, int *escolhaMenu, JOGADOR *p) {
     }
 }
 
-void Minigame_ShowDoMilhao(char *nome, int *escolhaMenu, JOGADOR *p) {
-    int i, j, pontuacao = 0;
+void Minigame_ShowDoMilhao(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR *p) {
+    int i, j, pontuacaoTemporaria = 0;
     char r;
     char *perguntas[] = {
         "Qual dessas palavras nao tem relacao com sustentacao?\nA) Base B) Alicerce\nC) Fundamento D) Ruina",
@@ -367,7 +443,7 @@ void Minigame_ShowDoMilhao(char *nome, int *escolhaMenu, JOGADOR *p) {
     char *respostas[] = {
         "D",
         "D",
-        "C",
+        "D",
         "D",
         "C",
         "B",
@@ -405,12 +481,13 @@ void Minigame_ShowDoMilhao(char *nome, int *escolhaMenu, JOGADOR *p) {
 
         if (r == respostas[i][0]) {
             printfDL("\nCerta resposta!\n\n",50);
-            pontuacao += 10;
+            pontuacaoTemporaria += 10;
+            *pontuacao = *pontuacao+10;
         } else {
             printf("\nErrado! Resposta correta e: %c \n\n", respostas[i][0]);
         }
     }
-    printf("\n%s sua pontuacao foi %d\n", nome, pontuacao);
+    printf("\n%s sua pontuacao foi %d\n", nome, pontuacaoTemporaria);
 }
 
 void printfDL(char *texto, int delay_ms) {
@@ -421,7 +498,7 @@ void printfDL(char *texto, int delay_ms) {
         texto++;
     }
 }
-void Minigame_BattleGame(char *nome, int *escolhaMenu, JOGADOR *p)
+void Minigame_BattleGame(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR *p)
 {
     typedef struct MOB_
     {
@@ -508,8 +585,8 @@ void Minigame_BattleGame(char *nome, int *escolhaMenu, JOGADOR *p)
     }
     else{
         printf("Voce venceu!\n");
+        *pontuacao = *pontuacao+10;
         quant_batalhas++;
     }
     printf("Continuacao da historia");
 }
-
