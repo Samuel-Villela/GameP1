@@ -10,11 +10,19 @@
 #define MAX_SLOTS 5
 #define TOP 5
 #define TAM 3
+#define total_insignias 5
+#define ID_Penaltis 0
+#define ID_Quiz 1
+#define ID_Batalha 2
+#define ID_Sudoku 3
+#define ID_Jogo_velha 4
+
 
 typedef struct JOGADOR_ {
     char nome[21];
     int ultimoMinigame;
     int pontuacao;
+    int insignias[total_insignias];
     // Atributos do BattleGame
     int ataque;
     int vida;
@@ -39,10 +47,10 @@ void carregarJogo(JOGADOR *p);
 void atributos(JOGADOR *p);
 void mostrarRanking();
 void limparTerminal();
-
+int contar_insignias(JOGADOR *p);
 
 int main() {
-    int i, sorteados[3], count = 0, sorteio;
+    int i, sorteados[5], count = 0, sorteio;
     char *nome = (char *)malloc(21 * sizeof(char));
     int escolhaMenu;
     int pontuacao = 0;
@@ -61,23 +69,21 @@ int main() {
     mostrarMenu(nome, &escolhaMenu, p);
 
     if (escolhaMenu == 1) { //Inicio do jogo(so inicia caso o jogador selecione "Iniciar")
+        int sorteiro;
         srand(time(NULL));
         count = p.ultimoMinigame; // aqui o contador vai sempre salvar onde o jgdr está
+        int InsigniasConquistadas = contar_insignias(&p);
+        printf("Insignias conquistadas: %d de 5\n\n", InsigniasConquistadas);
 
-        while (count < 3) {
+        while (p.ultimoMinigame < total_insignias) {
             int repetido = 0;
+
             sorteio = 1 + rand() % 5;
 
-            for (i = 0; i < count; i++) {
-                if (sorteio == sorteados[i]) {
-                    repetido = 1;
-                    break;
-                }
+            if( p.insignias[sorteio-1]==1){ // caso o jgdr volte ao menu apos um minigame que completou, tira o minigame da lista
+                continue;
             }
-
-            if (repetido) continue;
-
-            sorteados[count++] = sorteio;
+            
 
             if (sorteio == 1) {
                 limparTerminal();
@@ -88,7 +94,7 @@ int main() {
                 limparTerminal();
                 printfDL("\nJogo 2 escolhido: Show do Milhao\n", 50);
                 Minigame_ShowDoMilhao(nome, &escolhaMenu, &pontuacao, &p);
-                p.ultimoMinigame = count;
+                p.ultimoMinigame++;
             } else if (sorteio == 3) {
                 limparTerminal();
                 printfDL("\nJogo 3 escolhido: Matematica Discreta\n", 50);
@@ -117,11 +123,22 @@ int main() {
                 limparTerminal();
                 printfDL("\nJogo 5 escolhido:\n", 50);
             }
+            
         }
+        limparTerminal();
+        printfDL("Você coletou todas as 5 insígnias!\n", 50);
+        printfDL("A luz rompe as trevas do pesadelo...\n", 50);
+        printfDL("Você desperta do sonho com um novo olhar sobre si mesmo.\n", 50);
+        printfDL("\nParabéns, %s! Você venceu The Dreamer!\n", 50);
         free(nome);
         return 0;
     }
 }
+
+
+
+
+
 
 void mostrarMenu(char *nome, int *escolhaMenu, JOGADOR p) {
     *escolhaMenu = 0;
@@ -227,12 +244,17 @@ char lerOpcaoOuEsc(int *escolhaMenu, const char *opcoesValidas) {
     }
 }
 
+//void limparTerminal() {
+//    #ifdef _WIN32
+//        system("cls"); // comando do Windows
+//    #else
+//        system("clear"); // comando do Linux/macOS
+//    #endif
+//}
 void limparTerminal() {
-    #ifdef _WIN32
-        system("cls"); // comando do Windows
-    #else
-        system("clear"); // comando do Linux/macOS
-    #endif
+    for (int i = 0; i < 50; i++) {
+        printf("\n");
+    }
 }
 
 void atributos(JOGADOR *p)
@@ -398,54 +420,78 @@ void printfDL(char *texto, int delay_ms) {
 }
 
 void Minigame_Penaltis(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR *p) {
-    int ladoGoleiro = 0, i = 0, gols_feitos = 0, gols_desperdicados = 0;
+    int ladoGoleiro = 0, i = 0, gols_feitos = 0, gols_desperdicados = 0; int passou =0;
     char Pulo_Goleiro;
+    while(passou !=0){
+        printf("\n---- HORA DOS PENALTIS ----\n");
 
-    printf("\n---- HORA DOS PENALTIS ----\n");
+        for (i = 0; i < 5; i++) {
+            limparTerminal();
+            gols_feitos =0; gols_desperdicados =0;
+            printf("  ----------------------------------------------------- \n"
+                " |O Placar esta %d gols feitos e %d gols desperdicados |\n"
+                "  -----------------------------------------------------\n", gols_feitos, gols_desperdicados);
+            printf("                    ____   \n"
+                " o__        o__     |   |\\  \n"
+                "/|          /\\      |   |X\\ \n"
+                "/ > o        <\\     |   |XX\\\n");
 
-    for (i = 0; i < 5; i++) {
-        printf("  ----------------------------------------------------- \n"
-               " |O Placar esta %d gols feitos e %d gols desperdicados |\n"
-               "  -----------------------------------------------------\n", gols_feitos, gols_desperdicados);
-        printf("                    ____   \n"
-               " o__        o__     |   |\\  \n"
-               "/|          /\\      |   |X\\ \n"
-               "/ > o        <\\     |   |XX\\\n");
+            int chute_Player = '\0';
+            while (chute_Player != 'E' && chute_Player != 'D' && chute_Player != 'M') {
+                printf("\n Escolha um lado para chutar no gol:  \n");
+                printf("lado Esquerdo [E], Lado Direito [D], Meio do Gol [M]:   ");
 
-        int chute_Player = '\0';
-        while (chute_Player != 'E' && chute_Player != 'D' && chute_Player != 'M') {
-            printf("\n Escolha um lado para chutar no gol:  \n");
-            printf("lado Esquerdo [E], Lado Direito [D], Meio do Gol [M]:   ");
+                chute_Player = lerOpcaoOuEsc(escolhaMenu, "EDM");
+                printf("\n\n\n");
+            }
 
-            chute_Player = lerOpcaoOuEsc(escolhaMenu, "EDM");
-            printf("\n\n\n");
+            if (chute_Player == 0) {
+                mostrarMenu(nome, escolhaMenu, *p);
+                return;
+            }
+
+            ladoGoleiro = rand() % 3;
+            if (ladoGoleiro == 0) Pulo_Goleiro = 'E';
+            else if (ladoGoleiro == 1) Pulo_Goleiro = 'D';
+            else Pulo_Goleiro = 'M';
+
+            if (Pulo_Goleiro == chute_Player) {
+                printf("\nO GOLEIRO AGARROU SEU CHUTE!!!\n");
+                gols_desperdicados++;
+            } else {
+                printf("\nQUE GOLACOOO!!!! %s Converte o Penalti\n", nome);
+                *pontuacao = *pontuacao+10;
+                gols_feitos++;
+            }
         }
 
-        if (chute_Player == 0) {
-            mostrarMenu(nome, escolhaMenu, *p);
-            return;
-        }
+        if (gols_feitos >= 3) {
+            char temp [101];
+            sprintf(temp,"\n%s converteu a maior parte de seus penaltis, esta permitido ir para o proximo Desafio\n",nome);
+            printfDl(temp,50);
+            p-> insignias[ID_Penaltis] =1;
+            passou =1;
 
-        ladoGoleiro = rand() % 3;
-        if (ladoGoleiro == 0) Pulo_Goleiro = 'E';
-        else if (ladoGoleiro == 1) Pulo_Goleiro = 'D';
-        else Pulo_Goleiro = 'M';
 
-        if (Pulo_Goleiro == chute_Player) {
-            printf("\nO GOLEIRO AGARROU SEU CHUTE!!!\n");
-            gols_desperdicados++;
         } else {
-            printf("\nQUE GOLACOOO!!!! %s Converte o Penalti\n", nome);
-            *pontuacao = *pontuacao+10;
-            gols_feitos++;
+            char temp2[101];
+            sprintf(temp2,"\n%s nao converteu a maior parte de seus penaltis e FALHOU NO DESAFIO DOS PENALTIS\n, nome");
+            printfDL(temp2,50);
+            printfDl("deseja voltar ao menu ou reiniciar o Desafio?: [1] [2]");
+            int decisao;
+            scanf("%d",&decisao);
+            if(decisao == 1){
+                mostrarMenu (nome, escolhaMenu, *p);
+                return;
+            }
+            if (decisao ==0){
+                passou ==0;
+            }
+            
         }
-    }
 
-    if (gols_feitos >= 3) {
-        printf("\n%s converteu a maior parte de seus penaltis, esta permitido ir para o proximo Desafio\n", nome);
-    } else {
-        printf("\n%s nao converteu a maior parte de seus penaltis e FALHOU NO DESAFIO DOS PENALTIS\n", nome);
     }
+    printfDL("Um brilho surge no ar.\n Um fragmento flutua até sua mão — você recuperou o fragmento da Coragem.",50);
 }
 
 void Minigame_ShowDoMilhao(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR *p) {
@@ -729,7 +775,7 @@ void Minigame_BattleGame(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR *
     i=1;
     m[i].vida=5+quant_batalhas; m[i].ataque=2+quant_batalhas; m[i].defesa=2+quant_batalhas;
 
-    while(p->vida>=0 && m[i].vida>=0 && fugir==0)  //Batalha entre personagem e mob
+    while(p->vida>0 && m[i].vida>0 && fugir==0)  //Batalha entre personagem e mob
     {
         //Menu batalhas
         //printf("imagem da batalha");
@@ -796,4 +842,14 @@ void Minigame_BattleGame(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR *
         quant_batalhas++;
     }
     printf("Continuacao da historia");
+}
+
+int contar_insignias(JOGADOR *p){
+    int i=0, total =0;
+    for( i=0; i<total_insignias;i++){
+        if( p->insignias[i] ==1){
+            total++;
+        }
+    }
+    return total;
 }
