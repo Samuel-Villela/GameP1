@@ -22,6 +22,7 @@ typedef struct JOGADOR_ {
     char nome[21];
     int ultimoMinigame;
     int pontuacao;
+    int cont;
     int insignias[total_insignias];
     // Atributos do BattleGame
     int ataque;
@@ -64,7 +65,7 @@ int main() {
 
     strncpy(p.nome, nome, 20); //Passando o nome para o struct
     p.nome[20] = '\0';  // Garante terminação
-    p.ultimoMinigame = 0;
+    p.cont =0;
     atributos(&p); // Atributos Iniciais
     mostrarMenu(nome, &escolhaMenu, p);
 
@@ -76,7 +77,7 @@ int main() {
         Sleep(1000);
         printf("Insignias conquistadas: %d de 5\n", InsigniasConquistadas);
 
-        while (p.ultimoMinigame < total_insignias) {
+        while (p.cont < total_insignias) {
             int repetido = 0;
 
             sorteio = 1 + rand() % 5;
@@ -87,30 +88,34 @@ int main() {
             
 
             if (sorteio == 1) {
+                p.ultimoMinigame = ID_Penaltis;
                 limparTerminal();
                 printfDL("\nDesafio 1 escolhido: Penaltis\n", 150);
                 printfDL("Você desperta em um campo silencioso, cercado por névoa.\n", 150);
                 printfDL("Um estádio vazio... apenas você e o goleiro encaram-se sob um céu sem estrelas.\n", 150);
                 printfDL("A sua coragem será testada com cada chute.\n", 150);
                 Minigame_Penaltis(nome, &escolhaMenu, &pontuacao, &p);
-                p.ultimoMinigame = count; // faz com que cada minigame tenha um numero que representa qual game o jgdr está.
+                
             } else if (sorteio == 2) {
+                p.ultimoMinigame = ID_Quiz;
                 limparTerminal();
                 printfDL("\nDesafio 2 escolhido: Show do Milhão\n", 150);
                 printfDL("Você acorda em uma sala iluminada por holofotes, cercado por aplausos inexistentes.\n", 150); 
                 printfDL("À sua frente, uma bancada. Uma voz invisível anuncia perguntas que desafiam sua sabedoria.\n", 150);
                 printfDL("Somente a Mente afiada conseguirá sair dessa ilusão.\n", 150);
                 Minigame_ShowDoMilhao(nome, &escolhaMenu, &pontuacao, &p);
-                p.ultimoMinigame++;
+                
             } else if (sorteio == 3) {
                 limparTerminal();
-                printfDL("\nDesafio 3 escolhido: Batalha contra o Monstro\n", 150);
+                p.ultimoMinigame = ID_Batalha;
+                printfDL("\nDesafio 3 escolhido: Batalha contra o Matemática Discreta\n", 150);
                 printfDL("O chão treme enquanto uma criatura emerge da escuridão, olhos fixos em você.\n", 150);
                 printfDL("Você empunha sua força interior, mas é a Resiliência que será sua maior arma.\n", 150);
                 printfDL("A batalha começa... o medo é real, mas a superação também.\n", 150);
                 Minigame_BattleGame(nome, &escolhaMenu, &pontuacao, &p);
-                p.ultimoMinigame = count;
+                
             } else if (sorteio == 4) {
+                p.ultimoMinigame = ID_Jogo_velha;
                 limparTerminal();
                 
                 int opcao;
@@ -144,7 +149,7 @@ int main() {
         printfDL("A luz rompe as trevas do pesadelo...\n", 50);
         printfDL("Você desperta do sonho com um novo olhar sobre si mesmo.\n", 50);
         char temp3[101];
-        sprintf(temp3,"\nParabéns, %s! Você venceu The Dreamer!\n");
+        sprintf(temp3,"\nParabéns, %s! Você venceu The Dreamer!\n",nome);
         printfDL(temp3, 50);
         free(nome);
         return 0;
@@ -158,7 +163,7 @@ int main() {
 
 void mostrarMenu(char *nome, int *escolhaMenu, JOGADOR p) {
     *escolhaMenu = 0;
-    printf("\nO terminal sera limpo em 3 segundos...\n");
+    printf("\nO Jogo ira começar em 3 segundos...\n");
     sleep(3);
     limparTerminal();
 
@@ -234,8 +239,9 @@ void mostrarMenu(char *nome, int *escolhaMenu, JOGADOR p) {
             *escolhaMenu = 0;
         }
         if (*escolhaMenu == 5) {  // trocar nome
-            printf("Novo nome: ");
             scanf(" %20s", nome);
+            strncpy(p.nome, nome, 20);
+            p.nome[20] = '\0';
             *escolhaMenu = 0;
         }
         
@@ -440,7 +446,7 @@ void Minigame_Penaltis(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR *p)
     char Pulo_Goleiro;
     while(passou !=1){
         printf("\n---- HORA DOS PENALTIS ----\n");
-        Sleep(3000);
+        Sleep(3);
         for (i = 0; i < 5; i++) {
             Sleep(1000);
             limparTerminal();
@@ -486,12 +492,14 @@ void Minigame_Penaltis(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR *p)
             sprintf(temp,"\n%s converteu a maior parte de seus penaltis, esta permitido ir para o proximo Desafio\n",nome);
             printfDL(temp,50);
             p-> insignias[ID_Penaltis] =1;
+            p-> cont++;
+            salvarJogo(p);
             passou =1;
 
 
         } else {
             char temp2[101];
-            sprintf(temp2,"\n%s nao converteu a maior parte de seus penaltis e FALHOU NO DESAFIO DOS PENALTIS\n, nome");
+            sprintf(temp2,"\n%s nao converteu a maior parte de seus penaltis e FALHOU NO DESAFIO DOS PENALTIS\n", nome);
             printfDL(temp2,50);
             printfDL("deseja voltar ao menu ou reiniciar o Desafio?: [1] [2]",150);
             int decisao;
@@ -500,8 +508,9 @@ void Minigame_Penaltis(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR *p)
                 mostrarMenu (nome, escolhaMenu, *p);
                 return;
             }
-            if (decisao ==0){
-                passou ==0;
+            if (decisao ==2){
+                Minigame_Penaltis(nome, escolhaMenu, pontuacao, p);
+                return;
             }
             
         }
@@ -512,7 +521,7 @@ void Minigame_Penaltis(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR *p)
 }
 
 void Minigame_ShowDoMilhao(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR *p) {
-    int i, j, pontuacaoTemporaria = 0;
+    int i=0, j=0, pontuacaoTemporaria = 0;
     char r;
     char *perguntas[] = {
         "Qual dessas palavras nao tem relacao com sustentacao?\nA) Base B) Alicerce\nC) Fundamento D) Ruina",
@@ -572,30 +581,56 @@ void Minigame_ShowDoMilhao(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR
         "D"
     };
 
-    int usadas[18] = {0};
+    int usadas[18] = {0}; int perguntas_respondidasCertas=0;
+        for (j = 0; j < 10; j++) {
+            do {
+                i = rand() % 18;
+            } while (usadas[i]==1);
 
-    for (j = 0; j < 10; j++) {
-        do {
-            i = rand() % 18;
-        } while (usadas[i]==1);
+            usadas[i] = 1;
 
-        usadas[i] = 1;
+            printf("%s \n", perguntas[i]);
+            printf("Escolha uma alternativa (A-D ou ESC para sair): ");
+            r = lerOpcaoOuEsc(escolhaMenu, "ABCD");
 
-        printf("%s \n", perguntas[i]);
-        printf("Escolha uma alternativa (A-D ou ESC para sair): ");
-        r = lerOpcaoOuEsc(escolhaMenu, "ABCD");
+            if (r == 0) {
+                mostrarMenu(nome, escolhaMenu, *p);
+                return;
+            }
 
-        if (r == 0) {
-            mostrarMenu(nome, escolhaMenu, *p);
-            return;
+            if (r == respostas[i][0]) {
+                printfDL("\nCerta resposta!\n\n",50);
+                perguntas_respondidasCertas++;
+                pontuacaoTemporaria += 10;
+                *pontuacao = *pontuacao+10;
+            } else {
+                printf("\nErrado! Resposta correta e: %c \n\n", respostas[i][0]);
+            }
+            
         }
-
-        if (r == respostas[i][0]) {
-            printfDL("\nCerta resposta!\n\n",50);
-            pontuacaoTemporaria += 10;
-            *pontuacao = *pontuacao+10;
-        } else {
-            printf("\nErrado! Resposta correta e: %c \n\n", respostas[i][0]);
+    if(perguntas_respondidasCertas>=5){
+        printfDL("\nVocê concluiu o Desafio da Sabedoria.\n", 100);
+        printfDL("Um fragmento brilha no ar. Você conquistou a Insígnia da Sabedoria!\n", 100);
+        p->insignias[ID_Quiz] =1;
+        salvarJogo(p);
+        p->cont++;
+    }
+    else{
+        char temp[101];
+        sprintf(temp,"\nVocê Não concluiu o Desafio da Sabedoria.\n");
+        printfDL(temp,50);
+        char temp2[101];
+        sprintf(temp2,"\nVocê deseja voltar ao menu ou refazer o Desafio: [1] [2]\n");
+        printfDL(temp2,50);
+        int decisao;
+        scanf("%d",&decisao);
+        if(decisao==1){
+                mostrarMenu (nome, escolhaMenu, *p);
+                return;
+        }
+        else if(decisao ==2){
+            Minigame_ShowDoMilhao(nome, escolhaMenu, pontuacao, p);
+            return;
         }
     }
     printf("\n%s sua pontuacao foi %d\n", nome, pontuacaoTemporaria);
@@ -686,8 +721,11 @@ void jogarContraComputador(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR
         if (vencedor != '-') {
             imprimirTabuleiro(tabuleiro);
             printf("Jogador venceu!\n");
+            salvarJogo(p);
+            p->cont++;
+            p-> insignias[ID_Jogo_velha] =1;
             *pontuacao = *pontuacao+10;
-            break;
+            return;
         }
 
         if (tabuleiroCheio(tabuleiro)) {
@@ -709,12 +747,7 @@ void jogarContraComputador(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR
             printf("Computador venceu!\n");
             break;
         }
-
-        if (tabuleiroCheio(tabuleiro)) {
-            imprimirTabuleiro(tabuleiro);
-            printf("Empate!\n");
-            break;
-        }
+        
     }
 }
 
@@ -729,6 +762,7 @@ void jogarContraOutroJogador(char *nome, int *escolhaMenu, int *pontuacao, JOGAD
     char jogadorAtual = 'X';
 
     while (1) {
+        limparTerminal();
         imprimirTabuleiro(tabuleiro);
         int linha, coluna;
         printf("Pressione qualquer letra para jogar ou ESC para sair: ");
@@ -811,7 +845,7 @@ void Minigame_BattleGame(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR *
         } //Parte do personagem
         else if(acao_personagem == 'A'){
             m[i].vida = m[i].vida - p->ataque;
-            printf("Voce atacou o MOB\n");
+            printf("Voce atacou o BOSS\n");
         }
         else if(acao_personagem == 'D'){
             p->vida = p->vida - (m[i].ataque - p->defesa);
@@ -855,6 +889,8 @@ void Minigame_BattleGame(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR *
     else{
         printf("Voce venceu!\n");
         *pontuacao = *pontuacao+10;
+        p-> cont++;
+        salvarJogo(p);
         quant_batalhas++;
     }
     printf("Continuacao da historia");
