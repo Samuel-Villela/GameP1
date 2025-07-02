@@ -10,12 +10,12 @@
 #define MAX_SLOTS 5
 #define TOP 5
 #define TAM 3
-#define total_insignias 5
+#define total_insignias 4
 #define ID_Penaltis 0
 #define ID_Quiz 1
 #define ID_Batalha 2
-#define ID_Sudoku 3
-#define ID_Jogo_velha 4
+#define ID_Jogo_velha 3
+//#define ID_Sudoku 4
 
 
 typedef struct JOGADOR_ {
@@ -42,7 +42,7 @@ void jogarContraOutroJogador(char *nome, int *escolhaMenu, int *pontuacao, JOGAD
 
 void printfDL(char *texto, int delay_ms);
 char lerOpcaoOuEsc(int *escolhaMenu, const char *opcoesValidas); //Funcao de ler opcoes ou esc, usada nos minigames para retornar ao menu
-void mostrarMenu(char *nome, int *escolhaMenu, JOGADOR p);
+void mostrarMenu(char *nome, int *escolhaMenu, JOGADOR *p);
 void salvarJogo(JOGADOR *p);
 void carregarJogo(JOGADOR *p);
 void atributos(JOGADOR *p);
@@ -67,7 +67,7 @@ int main() {
     p.nome[20] = '\0';  // Garante terminação
     p.cont =0;
     atributos(&p); // Atributos Iniciais
-    mostrarMenu(nome, &escolhaMenu, p);
+    mostrarMenu(nome, &escolhaMenu, &p);
 
     if (escolhaMenu == 1) { //Inicio do jogo(so inicia caso o jogador selecione "Iniciar")
         int sorteiro;
@@ -80,14 +80,14 @@ int main() {
         while (p.cont < total_insignias) {
             int repetido = 0;
 
-            sorteio = 1 + rand() % 5;
+            sorteio = rand() % total_insignias;
             Sleep(3000);
-            if( p.insignias[sorteio-1]==1){ // caso o jgdr volte ao menu apos um minigame que completou, tira o minigame da lista
+            if( p.insignias[sorteio]==1){ // caso o jgdr volte ao menu apos um minigame que completou, tira o minigame da lista
                 continue;
             }
             
 
-            if (sorteio == 1) {
+            if (sorteio == ID_Penaltis) {
                 p.ultimoMinigame = ID_Penaltis;
                 limparTerminal();
                 printfDL("\nDesafio 1 escolhido: Penaltis\n", 150);
@@ -96,7 +96,7 @@ int main() {
                 printfDL("A sua coragem será testada com cada chute.\n", 150);
                 Minigame_Penaltis(nome, &escolhaMenu, &pontuacao, &p);
                 
-            } else if (sorteio == 2) {
+            } else if (sorteio == ID_Quiz) {
                 p.ultimoMinigame = ID_Quiz;
                 limparTerminal();
                 printfDL("\nDesafio 2 escolhido: Show do Milhão\n", 150);
@@ -105,7 +105,7 @@ int main() {
                 printfDL("Somente a Mente afiada conseguirá sair dessa ilusão.\n", 150);
                 Minigame_ShowDoMilhao(nome, &escolhaMenu, &pontuacao, &p);
                 
-            } else if (sorteio == 3) {
+            } else if (sorteio == ID_Batalha) {
                 limparTerminal();
                 p.ultimoMinigame = ID_Batalha;
                 printfDL("\nDesafio 3 escolhido: Batalha contra o Matemática Discreta\n", 150);
@@ -114,7 +114,7 @@ int main() {
                 printfDL("A batalha começa... o medo é real, mas a superação também.\n", 150);
                 Minigame_BattleGame(nome, &escolhaMenu, &pontuacao, &p);
                 
-            } else if (sorteio == 4) {
+            } else if (sorteio == ID_Jogo_velha) {
                 p.ultimoMinigame = ID_Jogo_velha;
                 limparTerminal();
                 
@@ -125,29 +125,33 @@ int main() {
                 printfDL("A Lógica será sua chave de saída deste quebra-cabeça vivo.\n", 150);
 
                 printf("\nEscolha uma opcao:\n");
-                printf("1. Jogar contra o computador\n");
-                printf("2. Jogar contra outro jogador\n");
+                printf(" Jogar contra o computador: [1]\n");
+                //printf("2. Jogar contra outro jogador\n");
                 scanf("%d", &opcao);
 
                 if (opcao == 1) {
                     jogarContraComputador(nome, &escolhaMenu, &pontuacao, &p);
-                } else if (opcao == 2) {
-                    jogarContraOutroJogador(nome, &escolhaMenu, &pontuacao, &p);
+                //} else if (opcao == 2) {
+                //    printf("modo Jogador contra outro Jogador invalido no momento, passando por manutençoes");
+                //    jogarContraOutroJogador(nome, &escolhaMenu, &pontuacao, &p);
                 } else {
                     printf("Opção inválida!\n");
                     return 1;
                 }
             } 
-            else if (sorteio == 5) {
-                limparTerminal();
-                printfDL("\nJogo 5 escolhido:\n", 50);
-            }
+            //else if (sorteio == 5) {
+            //    limparTerminal();
+            //    printfDL("\nJogo 5 escolhido:\n", 50);
+            //}
             
         }
         limparTerminal();
-        printfDL("Você coletou todas as 5 insígnias!\n", 50);
+        printfDL("Você coletou todas as 4 insígnias!\n", 50);
         printfDL("A luz rompe as trevas do pesadelo...\n", 50);
         printfDL("Você desperta do sonho com um novo olhar sobre si mesmo.\n", 50);
+        printfDL("A névoa se dissipa, revelando um caminho iluminado pela coragem, sabedoria, estratégia e força...\n", 50);
+        printfDL("Você não é mais o mesmo — superou seus medos e venceu o pesadelo!\n", 50);
+
         char temp3[101];
         sprintf(temp3,"\nParabéns, %s! Você venceu The Dreamer!\n",nome);
         printfDL(temp3, 50);
@@ -161,10 +165,10 @@ int main() {
 
 
 
-void mostrarMenu(char *nome, int *escolhaMenu, JOGADOR p) {
+void mostrarMenu(char *nome, int *escolhaMenu, JOGADOR *p) {
     *escolhaMenu = 0;
     printf("\nO Jogo ira começar em 3 segundos...\n");
-    sleep(3);
+    Sleep(3000);
     limparTerminal();
 
     while (*escolhaMenu == 0) 
@@ -208,7 +212,7 @@ void mostrarMenu(char *nome, int *escolhaMenu, JOGADOR p) {
 
             if(*escolhaMenu == 1){
                 // salvar jogo
-                salvarJogo(&p);
+                salvarJogo(p);
             }
             else{
                 limparTerminal();
@@ -224,7 +228,7 @@ void mostrarMenu(char *nome, int *escolhaMenu, JOGADOR p) {
 
             if(*escolhaMenu == 1){
                 // carregar jogo
-                carregarJogo(&p);
+                carregarJogo(p);
                 printfDL("Carregamento concluido!",50);
             }
             else{
@@ -240,8 +244,8 @@ void mostrarMenu(char *nome, int *escolhaMenu, JOGADOR p) {
         }
         if (*escolhaMenu == 5) {  // trocar nome
             scanf(" %20s", nome);
-            strncpy(p.nome, nome, 20);
-            p.nome[20] = '\0';
+            strncpy(p->nome, nome, 20);
+            p->nome[20] = '\0';
             *escolhaMenu = 0;
         }
         
@@ -468,7 +472,7 @@ void Minigame_Penaltis(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR *p)
             }
 
             if (chute_Player == 0) {
-                mostrarMenu(nome, escolhaMenu, *p);
+                mostrarMenu(nome, escolhaMenu, p);
                 return;
             }
 
@@ -505,7 +509,7 @@ void Minigame_Penaltis(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR *p)
             int decisao;
             scanf("%d",&decisao);
             if(decisao == 1){
-                mostrarMenu (nome, escolhaMenu, *p);
+                mostrarMenu (nome, &escolhaMenu, &p);
                 return;
             }
             if (decisao ==2){
@@ -594,7 +598,7 @@ void Minigame_ShowDoMilhao(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR
             r = lerOpcaoOuEsc(escolhaMenu, "ABCD");
 
             if (r == 0) {
-                mostrarMenu(nome, escolhaMenu, *p);
+                mostrarMenu(nome, escolhaMenu, p);
                 return;
             }
 
@@ -625,7 +629,7 @@ void Minigame_ShowDoMilhao(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR
         int decisao;
         scanf("%d",&decisao);
         if(decisao==1){
-                mostrarMenu (nome, escolhaMenu, *p);
+                mostrarMenu (nome, &escolhaMenu, &p);
                 return;
         }
         else if(decisao ==2){
@@ -703,7 +707,7 @@ void jogarContraComputador(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR
 
         if (r == 0) {
             printf("[ESC detectado] Voltando ao menu...\n");
-            mostrarMenu(nome, escolhaMenu, *p);
+            mostrarMenu(nome, escolhaMenu, p);
             return;
         
         }
@@ -770,7 +774,7 @@ void jogarContraOutroJogador(char *nome, int *escolhaMenu, int *pontuacao, JOGAD
 
         if (r == 0) {
             printf("[ESC detectado] Voltando ao menu...\n");
-            mostrarMenu(nome, escolhaMenu, *p);
+            mostrarMenu(nome, escolhaMenu, p);
             return;
         
         }
@@ -840,7 +844,7 @@ void Minigame_BattleGame(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR *
        
         if(acao_personagem == 0){
             printf("[ESC detectado] Voltando ao menu...\n");
-            mostrarMenu(nome, escolhaMenu, *p);
+            mostrarMenu(nome, escolhaMenu, p);
             return;
         } //Parte do personagem
         else if(acao_personagem == 'A'){
@@ -883,7 +887,7 @@ void Minigame_BattleGame(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR *
     if(p->vida <= 0){
         printf("Voce perdeu!\n");
         // add uma opcao se quer voltar pro menu ou tentar novamente
-        mostrarMenu(nome, escolhaMenu, *p);
+        mostrarMenu(nome, &escolhaMenu, &p);
         return;
     }
     else{
