@@ -75,8 +75,21 @@ int main() {
         count = p.ultimoMinigame; // aqui o contador vai sempre salvar onde o jgdr está
         int InsigniasConquistadas = contar_insignias(&p);
         Sleep(1000);
-        printf("Insignias conquistadas: %d de 5\n", InsigniasConquistadas);
+        printfDL("\n\nVocê desperta em um mundo distorcido, onde o tempo se dobra e a lógica vacila.\n", 50);
+        printfDL("Nada é certo. Nada é seguro. Só uma coisa é clara:\n", 50);
+        printfDL("Para escapar, você precisará conquistar 4 insígnias ocultas...\n\n", 50);
+        Sleep(1000);
+        printfDL("A cada desafio, uma parte de si será posta à prova:\n", 50);
+        printfDL("→ A precisão nos pênaltis...\n", 50);
+        printfDL("→ A força em batalha...\n", 50);
+        printfDL("→ A lógica no tabuleiro...\n", 50);
+        printfDL("→ E a mente no quebra-cabeça...\n\n", 50);
 
+        printfDL("Acorde, sonhador...\n", 80);
+        printfDL("Ou permaneça perdido entre pesadelos eternos.\n\n", 80);
+        
+        printf("Insignias conquistadas: %d de 4\n", InsigniasConquistadas);
+        Sleep(2000);
         while (p.cont < total_insignias) {
             int repetido = 0;
 
@@ -90,28 +103,28 @@ int main() {
             if (sorteio == ID_Penaltis) {
                 p.ultimoMinigame = ID_Penaltis;
                 limparTerminal();
-                printfDL("\nDesafio 1 escolhido: Penaltis\n", 150);
-                printfDL("Você desperta em um campo silencioso, cercado por névoa.\n", 150);
-                printfDL("Um estádio vazio... apenas você e o goleiro encaram-se sob um céu sem estrelas.\n", 150);
-                printfDL("A sua coragem será testada com cada chute.\n", 150);
+                printfDL("\nDesafio 1 escolhido: Penaltis\n", 50);
+                printfDL("Você desperta em um campo silencioso, cercado por névoa.\n", 50);
+                printfDL("Um estádio vazio... apenas você e o goleiro encaram-se sob um céu sem estrelas.\n", 50);
+                printfDL("A sua coragem será testada com cada chute.\n", 50);
                 Minigame_Penaltis(nome, &escolhaMenu, &pontuacao, &p);
                 
             } else if (sorteio == ID_Quiz) {
                 p.ultimoMinigame = ID_Quiz;
                 limparTerminal();
-                printfDL("\nDesafio 2 escolhido: Show do Milhão\n", 150);
-                printfDL("Você acorda em uma sala iluminada por holofotes, cercado por aplausos inexistentes.\n", 150); 
-                printfDL("À sua frente, uma bancada. Uma voz invisível anuncia perguntas que desafiam sua sabedoria.\n", 150);
-                printfDL("Somente a Mente afiada conseguirá sair dessa ilusão.\n", 150);
+                printfDL("\nDesafio 2 escolhido: Show do Milhão\n", 50);
+                printfDL("Você acorda em uma sala iluminada por holofotes, cercado por aplausos inexistentes.\n", 50); 
+                printfDL("À sua frente, uma bancada. Uma voz invisível anuncia perguntas que desafiam sua sabedoria.\n", 50);
+                printfDL("Somente a Mente afiada conseguirá sair dessa ilusão.\n", 50);
                 Minigame_ShowDoMilhao(nome, &escolhaMenu, &pontuacao, &p);
                 
             } else if (sorteio == ID_Batalha) {
                 limparTerminal();
                 p.ultimoMinigame = ID_Batalha;
-                printfDL("\nDesafio 3 escolhido: Batalha contra o Matemática Discreta\n", 150);
-                printfDL("O chão treme enquanto uma criatura emerge da escuridão, olhos fixos em você.\n", 150);
-                printfDL("Você empunha sua força interior, mas é a Resiliência que será sua maior arma.\n", 150);
-                printfDL("A batalha começa... o medo é real, mas a superação também.\n", 150);
+                printfDL("\nDesafio 3 escolhido: Batalha contra o Matemática Discreta\n", 50);
+                printfDL("O chão treme enquanto uma criatura emerge da escuridão, olhos fixos em você.\n", 50);
+                printfDL("Você empunha sua força interior, mas é a Resiliência que será sua maior arma.\n", 50);
+                printfDL("A batalha começa... o medo é real, mas a superação também.\n", 50);
                 Minigame_BattleGame(nome, &escolhaMenu, &pontuacao, &p);
                 
             } else if (sorteio == ID_Jogo_velha) {
@@ -119,10 +132,10 @@ int main() {
                 limparTerminal();
                 
                 int opcao;
-                printfDL("\nDesafio 4 escolhido: Jogo da Velha\n", 150);
-                printfDL("Você se vê diante de um tabuleiro flutuante, as peças se movem como se tivessem vontade própria.\n", 150);
-                printfDL("Cada jogada altera o ambiente ao seu redor — é um duelo de estratégia e precisão.\n", 150);
-                printfDL("A Lógica será sua chave de saída deste quebra-cabeça vivo.\n", 150);
+                printfDL("\nDesafio 4 escolhido: Jogo da Velha\n", 50);
+                printfDL("Você se vê diante de um tabuleiro flutuante, as peças se movem como se tivessem vontade própria.\n", 50);
+                printfDL("Cada jogada altera o ambiente ao seu redor — é um duelo de estratégia e precisão.\n", 50);
+                printfDL("A Lógica será sua chave de saída deste quebra-cabeça vivo.\n", 50);
 
                 printf("\nEscolha uma opcao:\n");
                 printf(" Jogar contra o computador: [1]\n");
@@ -194,7 +207,7 @@ void mostrarMenu(char *nome, int *escolhaMenu, JOGADOR *p) {
         printfDL("  6) Sair do jogo\n\n", 50);
 
         printf("Digite o numero da opcao desejada:\n");
-        scanf(" %d", escolhaMenu);
+        scanf(" %d",escolhaMenu);
 
         if(*escolhaMenu < 0 || *escolhaMenu > 6)
         {
@@ -497,7 +510,7 @@ void Minigame_Penaltis(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR *p)
             printfDL(temp,50);
             p-> insignias[ID_Penaltis] =1;
             p-> cont++;
-            salvarJogo(p);
+        
             passou =1;
 
 
@@ -509,7 +522,7 @@ void Minigame_Penaltis(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR *p)
             int decisao;
             scanf("%d",&decisao);
             if(decisao == 1){
-                mostrarMenu (nome, &escolhaMenu, &p);
+                mostrarMenu (nome, escolhaMenu, p);
                 return;
             }
             if (decisao ==2){
@@ -613,10 +626,10 @@ void Minigame_ShowDoMilhao(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR
             
         }
     if(perguntas_respondidasCertas>=5){
-        printfDL("\nVocê concluiu o Desafio da Sabedoria.\n", 100);
-        printfDL("Um fragmento brilha no ar. Você conquistou a Insígnia da Sabedoria!\n", 100);
+        printfDL("\nVocê concluiu o Desafio da Sabedoria.\n", 50);
+        printfDL("Um fragmento brilha no ar. Você conquistou a Insignia da Sabedoria!\n", 50);
         p->insignias[ID_Quiz] =1;
-        salvarJogo(p);
+        
         p->cont++;
     }
     else{
@@ -629,7 +642,7 @@ void Minigame_ShowDoMilhao(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR
         int decisao;
         scanf("%d",&decisao);
         if(decisao==1){
-                mostrarMenu (nome, &escolhaMenu, &p);
+                mostrarMenu (nome, escolhaMenu, p);
                 return;
         }
         else if(decisao ==2){
@@ -699,6 +712,7 @@ void jogarContraComputador(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR
     srand(time(NULL));
 
     while (1) {
+        limparTerminal();
         imprimirTabuleiro(tabuleiro);
         int linha, coluna;
 
@@ -725,7 +739,7 @@ void jogarContraComputador(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR
         if (vencedor != '-') {
             imprimirTabuleiro(tabuleiro);
             printf("Jogador venceu!\n");
-            salvarJogo(p);
+            printfDL("Um fragmento brilha no ar. Você conquistou a Insígnia da resiliencia!\n", 100);
             p->cont++;
             p-> insignias[ID_Jogo_velha] =1;
             *pontuacao = *pontuacao+10;
@@ -735,7 +749,16 @@ void jogarContraComputador(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR
         if (tabuleiroCheio(tabuleiro)) {
             imprimirTabuleiro(tabuleiro);
             printf("Empate!\n");
-            break;
+            printfDL("Deseja tentar novamente [1] ou voltar ao menu [2]?\n", 50);
+            int op;
+            scanf("%d", &op);
+            if(op == 1){
+                jogarContraComputador(nome, escolhaMenu, pontuacao, p);
+                return;
+            } else {
+                mostrarMenu(nome, escolhaMenu, p);
+                return;
+            }
         }
 
         printf("Vez do computador:\n");
@@ -749,6 +772,18 @@ void jogarContraComputador(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR
         if (vencedor != '-') {
             imprimirTabuleiro(tabuleiro);
             printf("Computador venceu!\n");
+            printfDL("\nO tabuleiro se apaga... A máquina foi mais precisa desta vez.\n", 50);
+            printfDL("Você sente o mundo se desfazer ao seu redor. A lógica te derrotou — mas ainda há tempo para tentar novamente.\n", 50);
+            printfDL("Deseja tentar novamente [1] ou voltar ao menu [2]?\n", 50);
+            int op;
+            scanf("%d", &op);
+            if(op == 1){
+                jogarContraComputador(nome, escolhaMenu, pontuacao, p);
+                return;
+            } else {
+                mostrarMenu(nome, escolhaMenu, p);
+                return;
+            }
             break;
         }
         
@@ -808,97 +843,112 @@ void jogarContraOutroJogador(char *nome, int *escolhaMenu, int *pontuacao, JOGAD
 
 void Minigame_BattleGame(char *nome, int *escolhaMenu, int *pontuacao, JOGADOR *p)
 {
-    typedef struct MOB_
+    typedef struct BOSS_
     {
         int vida;
         int ataque;
         int defesa;
-    }MOB;
+    }BOSS;
 
-    MOB m[10];
+    BOSS m[10];
     char acao_personagem;
     int fugir=0, ataque_especial_mob=0;
     int i,z; //z e o aleatorio
     int quant_batalhas=0;
+    int passou =0;
 
     srand(time(NULL));
 
-    printf("Apresentacao do minigame\n");
-    
-    //Informacoes sobre personagem e MOB antes da batalha. Precisa ser definido para cada MOB
-    i=1;
-    m[i].vida=5+quant_batalhas; m[i].ataque=2+quant_batalhas; m[i].defesa=2+quant_batalhas;
-
-    while(p->vida>0 && m[i].vida>0 && fugir==0)  //Batalha entre personagem e mob
+    printfDL("A batalha está preste a começar, se prepare\n",50);
+    while (passou!=1) // só faça passou =1 quando termianr todas as batalhas
     {
-        //Menu batalhas
-        //printf("imagem da batalha");
+        i=1;
+        m[i].vida=5+quant_batalhas; m[i].ataque=2+quant_batalhas; m[i].defesa=2+quant_batalhas;
 
-        printf("Atacar = A\n");
-        printf("Defender = D\n");
-        printf("Fugir = F\n");
+        while(p->vida>0 && m[i].vida>0 && fugir==0)  //Batalha entre personagem e mob
+        {
+            //Menu batalhas
+            //printf("imagem da batalha");
 
-        printf("\nEscolha sua acao: ");
+            printf("Atacar = A\n");
+            printf("Defender = D\n");
+            printf("Fugir = F\n");
 
-        acao_personagem = lerOpcaoOuEsc(escolhaMenu, "ADF");
-       
-        if(acao_personagem == 0){
-            printf("[ESC detectado] Voltando ao menu...\n");
-            mostrarMenu(nome, escolhaMenu, p);
-            return;
-        } //Parte do personagem
-        else if(acao_personagem == 'A'){
-            m[i].vida = m[i].vida - p->ataque;
-            printf("Voce atacou o BOSS\n");
-        }
-        else if(acao_personagem == 'D'){
-            p->vida = p->vida - (m[i].ataque - p->defesa);
-            printf("Voce se defendeu\n");
-        }
-        else if(acao_personagem == 'F'){
-            fugir=1;
-            printf("Seu personagem fugiu\n");
-        }
-        printf("\n");
-        //Parte do personagem
-        z=1+rand()%3;
+            printf("\nEscolha sua acao: ");
 
-        if(ataque_especial_mob==1){  //Ataque especial
-            p->vida = p->vida - m[i].ataque;  //Ataque com o buff
-            m[i].ataque = m[i].ataque/2;
-            ataque_especial_mob=0;
+            acao_personagem = lerOpcaoOuEsc(escolhaMenu, "ADF");
+        
+            if(acao_personagem == 0){
+                printf("[ESC detectado] Voltando ao menu...\n");
+                mostrarMenu(nome, escolhaMenu, p);
+                return;
+            } //Parte do personagem
+            else if(acao_personagem == 'A'){
+                m[i].vida = m[i].vida - p->ataque;
+                printfDL("Voce atacou o BOSS\n",50);
+            }
+            else if(acao_personagem == 'D'){
+                p->vida = p->vida - (m[i].ataque - p->defesa);
+                printfDL("Voce se defendeu\n",50);
+            }
+            else if(acao_personagem == 'F'){
+                fugir=1;
+                printfDL("Seu personagem fugiu\n",50);
+            }
+            printf("\n");
+            //Parte do personagem
+            z=1+rand()%3;
+
+            if(ataque_especial_mob==1){  //Ataque especial
+                p->vida = p->vida - m[i].ataque;  //Ataque com o buff
+                m[i].ataque = m[i].ataque/2;
+                ataque_especial_mob=0;
+            }
+            else if(z==1){ //Ataque
+                p->vida = p->vida - m[i].ataque;
+                printfDL("O BOSS Matématica Discreta te atacou com a Prova 1\n",50);
+            }
+            else if(z==2){ //Defesa
+                m[i].vida = m[i].vida - (p->ataque - m[1].defesa);
+                printfDL("O monstro se defendeu com lógica de enunciados e analise combinatoria\n",50);
+            }
+            else if(z==3){//Ataque especial
+                ataque_especial_mob=1;
+                m[i].ataque = m[i].ataque*2;
+                printfDL("O BOSS esta carregando um golpe especial!, A Prova Optativa está vindo!!!\n",50);
+            }
+            printf("Sua vida atual e: %d \n",p->vida);
+            printf("A vida atual do MOB e: %d \n",m[i].vida);
         }
-        else if(z==1){ //Ataque
-            p->vida = p->vida - m[i].ataque;
-            printf("O MOB te atacou\n");
+        if(p->vida <= 0){
+            printfDL("Voce perdeu! e observa aos poucos a esperança sucumbir aos seus medos mais profundos\n",50);
+            printfDL("Voce deseja tentar denovo?: sim[1] nao[2]  ",50);
+            int n;
+            scanf("%d",&n);
+            if(n==1){
+                printfDL("recomeçando o desafio",50);
+                Minigame_BattleGame(nome,escolhaMenu,pontuacao,p);
+                return;
+            }
+            if(n==2){
+                mostrarMenu(nome, escolhaMenu, p);
+                return;            
+            }
+
         }
-        else if(z==2){ //Defesa
-            m[i].vida = m[i].vida - (p->ataque - m[1].defesa);
-            printf("O monstro se defendeu\n");
+        else{
+            printf("Voce venceu!\n");
+            printfDL("Um fragmento brilha no ar. Você conquistou a Insígnia da resiliencia!\n", 100);
+            *pontuacao = *pontuacao+10;
+            p-> cont++;
+            
+            quant_batalhas++;
+            p->insignias[ID_Batalha] =1;
+            passou =1;
         }
-        else if(z==3){//Ataque especial
-            ataque_especial_mob=1;
-            m[i].ataque = m[i].ataque*2;
-            printf("O MOB esta carregando um golpe especial!\n");
-        }
-        printf("Sua vida atual e: %d \n",p->vida);
-        printf("A vida atual do MOB e: %d \n",m[i].vida);
     }
-    if(p->vida <= 0){
-        printf("Voce perdeu!\n");
-        // add uma opcao se quer voltar pro menu ou tentar novamente
-        mostrarMenu(nome, &escolhaMenu, &p);
-        return;
-    }
-    else{
-        printf("Voce venceu!\n");
-        *pontuacao = *pontuacao+10;
-        p-> cont++;
-        salvarJogo(p);
-        quant_batalhas++;
-    }
-    printf("Continuacao da historia");
 }
+    
 
 int contar_insignias(JOGADOR *p){
     int i=0, total =0;
